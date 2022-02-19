@@ -1,23 +1,23 @@
-CXX=g++
-RM=rm -f
-CPPFLAGS=-g $(shell root-config --cflags)
-LDFLAGS=-g $(shell root-config --ldflags)
-LDLIBS=$(shell root-config --libs)
 
-SRCS=tool.cc support.cc
-OBJS=$(subst .cc,.o,$(SRCS))
+SYSCONF_LINK = g++
+CPPFLAGS     =
+LDFLAGS      =
+LIBS         = -lm
 
-all: tool
+DESTDIR = ./
+TARGET  = main
 
-tool: $(OBJS)
-    $(CXX) $(LDFLAGS) -o tool $(OBJS) $(LDLIBS)
+OBJECTS := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
-tool.o: tool.cc support.hh
+all: $(DESTDIR)$(TARGET)
 
-support.o: support.hh support.cc
+$(DESTDIR)$(TARGET): $(OBJECTS)
+	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $(DESTDIR)$(TARGET) $(OBJECTS) $(LIBS)
+
+$(OBJECTS): %.o: %.cpp
+	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@
 
 clean:
-    $(RM) $(OBJS)
-
-distclean: clean
-    $(RM) tool
+	-rm -f $(OBJECTS)
+	-rm -f $(TARGET)
+	-rm -f *.tga
