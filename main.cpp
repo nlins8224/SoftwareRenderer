@@ -112,34 +112,37 @@ void triangle(Vec2i p0, Vec2i p1, Vec2i p2, TGAImage &image, TGAColor color) {
 
 
 void render(Model *model, int width, int height, TGAImage &image, float scale) {
+	Vec3f lightDir(0, 0, -1);
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
+		Vec3f worldCoords[3];
+		Vec2i screenCoords[3];
 		for (int j = 0; j < 3; j++) { 
-        	Vec3f v0 = model->vert(face[j]); 
-        	Vec3f v1 = model->vert(face[(j + 1) % 3]); 
-        	int x0 = (v0.x + 1.) * width / scale; 
-        	int y0 = (v0.y + 1.) * height / scale; 
-        	int x1 = (v1.x + 1.) * width / scale; 
-        	int y1 = (v1.y + 1.) * height / scale; 
-        	line(x0, y0, x1, y1, image, white); 
+			Vec3f v = model->vert(face[j]);
+			screenCoords[j] = Vec2i((v.x + 1.) * width / scale, (v.y + 1.) * height / scale);
+			worldCoords[j] = v;
     	} 
+		// normal of a face is a cross product of two sides 
+		Vec3f n = (worldCoords[2] - worldCoords[0]) ^ (worldCoords[1] - worldCoords[0]);
+		n.normalize();
+		float intensity = n * lightDir;
+		// back face culling
+		if (intensity > 0) {
+			triangle(screenCoords[0], screenCoords[1], screenCoords[2], image, TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
+		}
 	}
 }
 
 void init() {
-	model = new Model("obj/tree.obj");
+	model = new Model("obj/african_head.obj");
 }
 
 
 int main(int argc, char** argv) {
 	init();
 	TGAImage image(WIDTH, HEIGHT, TGAImage::RGB);
-	//render(model, WIDTH, HEIGHT, image, 4);
-	Vec2i t0(10, 70);
-	Vec2i t1(50, 160);
-	Vec2i t2(70, 80);
-	triangle(t0, t1, t2, image, red);
+	render(model, WIDTH, HEIGHT, image, 2);
 	image.flip_vertically(); // origin at the left bottom corner of the image
 	image.write_tga_file("output2.tga");
 	delete model;
