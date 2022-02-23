@@ -1,7 +1,10 @@
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <limits>
 #include "tgaimage.h"
 #include "model.h"
 #include "geometry.h"
-#include <algorithm>
 
 
 const int WIDTH = 800;
@@ -205,8 +208,6 @@ void render(Model *model, int width, int height, TGAImage &image, float scale) {
 	Vec3f lightDir(0, 0, -1);
 	float *zbuffer = new float[width * height];
 	for (int i = width * height; i--; zbuffer[i] = -std::numeric_limits<float>::max());
-
-	TGAImage image(WIDTH, HEIGHT, TGAImage::RGB);
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
