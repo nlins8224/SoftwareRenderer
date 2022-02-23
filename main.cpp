@@ -73,7 +73,12 @@ void line(Vec2i p0, Vec2i p1, TGAImage &image, TGAColor color) {
 	}
 }
 
-/* Maybe could be optimized to O(N*logN) */
+
+#if 0
+/*
+Maybe this could be optimized to O(N*logN) 
+Line sweeping algorithm
+ */
 void triangle(Vec2i p0, Vec2i p1, Vec2i p2, TGAImage &image, TGAColor color) {
 	if (p0.y > p1.y) std::swap(p0, p1);
 	if (p0.y > p2.y) std::swap(p0, p2);
@@ -108,29 +113,107 @@ void triangle(Vec2i p0, Vec2i p1, Vec2i p2, TGAImage &image, TGAColor color) {
 	}
 }
 
+#else
 
+/* */
+Vec3f barycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P) {
+	
+	/*
+	 Cross product of V1 and V2 gives barycentric coordinates parameters
+	 AB, AC, PA are vectors
 
+	 From barycentric coordinates definition, we know that:
+     1. P(u, v, z) = zA + uB + vC
+	 2. z + u + v = 1
+	 thus: 	
+	 P(u, v) = (1 - u - v)A + uB + vC
+	 then:
+	 P(u, v) = A - uA + uB - vA + vC
+	 P(u, v) = A + uAB + vAC
+	 A - P + uAB + vAC = 0
+	 PA + uAB + vAC = 0
+	*/
+	Vec3f V1 = Vec3f(
+		C.x - A.x,     // AC_x
+	    B.x - A.x,     // AB_x
+		A.x - P.x	   // PA_x
+	);
+
+	Vec3f V2 = Vec3f(
+		C.y - A.y,     // AC_y
+	    B.y - A.y,     // AB_y
+		A.y - P.y	   // PA_y
+	);
+
+	Vec3f u = cross(V1, V2);
+
+	// degenerate case
+	if (std::abs(u.z) < 1) return Vec3f(-1, 1, 1);
+	
+	// (1 - u - v, u, v)
+	return Vec3f(1.f - (u.x + u.y) / u.z, 
+	             u.y / u.z, 
+				 u.x / u.z);
+}
+
+/* Pixel is inside triangle if barycentric coordinates parameters 0 <= u, v, z <= 1 */
+// bool inTriangle(Vec2i *pts, Vec2i P) {
+// 	Vec3f bParams = barycentric(pts, P);
+// 	return bParams.x >= 0 && bParams.y >= 0 && bParams.z >= 0;
+// }
+
+/* 
+For each pixel in bounding box if pixel is inside triangle then color that pixel
+*/
+void triangle(Vec3f *pts, float *zbuffer, TGAImage &image, TGAColor color) {
+	Vec2f clamp(image.get_width() - 1, image.get_height() - 1);
+	Vec2f boundingBoxMax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+	Vec2f boundingBoxMin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 2; j++) {
+			boundingBoxMin[j] = std::max(0.f, std::min(boundingBoxMin[j], pts[i][j]));
+            boundingBoxMax[j] = std::min(clamp[j], std::max(boundingBoxMax[j], pts[i][j]));
+		}
+	}
+
+	Vec3f P;
+	for (P.x = boundingBoxMin.x; P.x <= boundingBoxMax.x; P.x++) {
+		for (P.y = boundingBoxMin.y; P.y <= boundingBoxMax.y; P.y++) {
+			Vec3f bParams = barycentric(pts[0], pts[1], pts[2], P);
+			if (bParams.x < 0 || bParams.y < 0 || bParams.z < 0) 
+				continue;
+			P.z = 0;
+			for (int i = 0; i < 3; i++) {
+				P.z += pts[i][2] * bParams[i];
+			}
+			if (zbuffer[int(P.x + P.y * WIDTH)] < P.z) {
+				zbuffer[int(P.x + P.y * WIDTH)] = P.z;
+				image.set(P.x, P.y, color);
+			}
+		}
+	}
+}
+
+#endif
+
+Vec3f world2screen(Vec3f v, uint width, uint height) {
+    return Vec3f(int((v.x + 1.) * width / 2. + .5), int((v.y + 1.) * height / 2. + .5), v.z);
+}
 
 void render(Model *model, int width, int height, TGAImage &image, float scale) {
 	Vec3f lightDir(0, 0, -1);
+	float *zbuffer = new float[width * height];
+	for (int i = width * height; i--; zbuffer[i] = -std::numeric_limits<float>::max());
+
+	TGAImage image(WIDTH, HEIGHT, TGAImage::RGB);
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
-		Vec3f worldCoords[3];
-		Vec2i screenCoords[3];
-		for (int j = 0; j < 3; j++) { 
-			Vec3f v = model->vert(face[j]);
-			screenCoords[j] = Vec2i((v.x + 1.) * width / scale, (v.y + 1.) * height / scale);
-			worldCoords[j] = v;
-    	} 
-		// normal of a face is a cross product of two sides 
-		Vec3f n = (worldCoords[2] - worldCoords[0]) ^ (worldCoords[1] - worldCoords[0]);
-		n.normalize();
-		float intensity = n * lightDir;
-		// back face culling
-		if (intensity > 0) {
-			triangle(screenCoords[0], screenCoords[1], screenCoords[2], image, TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
-		}
+        Vec3f pts[3];
+        for (int i = 0; i < 3; i++) 
+			pts[i] = world2screen(model->vert(face[i]), WIDTH, HEIGHT);
+        triangle(pts, zbuffer, image, TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
 	}
 }
 

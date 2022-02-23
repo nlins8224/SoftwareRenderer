@@ -14,12 +14,12 @@ Model::Model(const char *filename) : verts_(), faces_() {
         std::getline(in, line);
         std::istringstream iss(line.c_str());
         char trash;
-        if (line.compare(0, 2, "v ") == 0) {
+        if (!line.compare(0, 2, "v ")) {
             iss >> trash;
             Vec3f v;
-            for (int i=0;i<3;i++) iss >> v.raw[i];
+            for (int i=0;i<3;i++) iss >> v[i];
             verts_.push_back(v);
-        } else if (line.compare(0, 2, "f ") == 0) {
+        } else if (!line.compare(0, 2, "f ")) {
             std::vector<int> f;
             int itrash, idx;
             iss >> trash;
