@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <limits>
+#include <iostream>
 #include "tgaimage.h"
 #include "model.h"
 #include "geometry.h"
@@ -211,10 +212,20 @@ void render(Model *model, int width, int height, TGAImage &image, float scale) {
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
-        Vec3f pts[3];
-        for (int i = 0; i < 3; i++) 
-			pts[i] = world2screen(model->vert(face[i]), WIDTH, HEIGHT);
-        triangle(pts, zbuffer, image, TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
+	
+        Vec3f screenCords[3];
+		Vec3f worldCoords[3];
+        for (int j = 0; j < 3; j++) {
+			Vec3f v = model->vert(face[j]);
+			screenCords[j] = world2screen(v, WIDTH, HEIGHT);
+			worldCoords[j] = v;
+		}
+		Vec3f n = cross((worldCoords[2] - worldCoords[0]), (worldCoords[1] - worldCoords[0]));
+		n.normalize();
+		float intensity = n * lightDir;
+		if (intensity > 0) {
+ 	       triangle(screenCords, zbuffer, image, TGAColor(intensity*255, intensity*255, intensity*255, 255));
+		}
 	}
 }
 
