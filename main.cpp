@@ -10,10 +10,41 @@
 
 const int WIDTH = 800;
 const int HEIGHT = 800;
+const int DEPTH = 255;
 const TGAColor white = TGAColor(255, 255, 255, 255);
 const TGAColor red   = TGAColor(255, 0,   0,   255);
 const TGAColor green = TGAColor(0,   255, 0,   255);
 Model *model = NULL;
+int *zbuffer = NULL;
+
+Vec3f lightDir(0, 0, -1);
+Vec3f camera(0, 0, 3);
+
+Vec3f matrixToVector(Matrix m) {
+	return Vec3f(m[0][0] / m[3][0], m[1][0] / m[3][0], m[2][0] / m[3][0]);
+}
+
+Matrix vectorToMatrix(Vec3f v) {
+	Matrix m(4, 1);
+	m[0][0] = v.x;
+	m[1][0] = v.y;
+	m[2][0] = v.z;
+	m[3][0] = 1.f;
+	return m;
+}
+
+Matrix viewport(int x, int y, int w, int h, int d) {
+	Matrix m = Matrix::identity(4);
+	// Scale
+	m[0][0] = w / 2.f;
+	m[1][1] = h / 2.f;
+	m[2][2] = d / 2.f;
+	// Translate
+	m[0][3] = x + w / 2.f;
+	m[1][3] = y + h / 2.f;
+	m[2][3] = d / 2.f;
+	return m;
+}
 
 /* This function draws a line by iterating over x axis. x1, x2 are swapped if x1 < x0, because of loop conditional. 
 If height is greater than width, then x and y are transposed and de-transposed to avoid line cutting (because of loop conditional). */
@@ -149,7 +180,7 @@ Vec3f barycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P) {
 		A.y - P.y	   // PA_y
 	);
 
-	Vec3f u = cross(V1, V2);
+	Vec3f u = V1 ^ V2;
 
 	// degenerate case
 	if (std::abs(u.z) < 1) return Vec3f(-1, 1, 1);
@@ -201,14 +232,19 @@ void triangle(Vec3f *pts, float *zbuffer, TGAImage &image, TGAColor color) {
 
 #endif
 
-Vec3f world2screen(Vec3f v, uint width, uint height) {
+Vec3f worldToScreen(Vec3f v, uint width, uint height) {
     return Vec3f(int((v.x + 1.) * width / 2. + .5), int((v.y + 1.) * height / 2. + .5), v.z);
 }
 
-void render(Model *model, int width, int height, TGAImage &image, float scale) {
-	Vec3f lightDir(0, 0, -1);
+void render(Model *model, int width, int height, int depth, TGAImage &image, float scale) {
 	float *zbuffer = new float[width * height];
-	for (int i = width * height; i--; zbuffer[i] = -std::numeric_limits<float>::max());
+	for (int i = 0; i < width * height; i++) {
+        zbuffer[i] = std::numeric_limits<int>::min();
+    }
+
+	Matrix Projection = Matrix::identity(4);
+    Matrix ViewPort   = viewport(width / scale, height / scale, width * 3 / 4, height * 3 / 4, depth);
+    Projection[3][2] = -1.f / camera.z;
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
@@ -217,14 +253,14 @@ void render(Model *model, int width, int height, TGAImage &image, float scale) {
 		Vec3f worldCoords[3];
         for (int j = 0; j < 3; j++) {
 			Vec3f v = model->vert(face[j]);
-			screenCords[j] = world2screen(v, WIDTH, HEIGHT);
+			screenCoords[j] = matrixToVector(ViewPort * Projection * vectorToMatrix(v));
 			worldCoords[j] = v;
 		}
-		Vec3f n = cross((worldCoords[2] - worldCoords[0]), (worldCoords[1] - worldCoords[0]));
+		Vec3f n = (worldCoords[2] - worldCoords[0]) ^ (worldCoords[1] - worldCoords[0]);
 		n.normalize();
 		float intensity = n * lightDir;
 		if (intensity > 0) {
- 	       triangle(screenCords, zbuffer, image, TGAColor(intensity*255, intensity*255, intensity*255, 255));
+ 	       triangle(screenCoords, zbuffer, image, TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
 		}
 	}
 }
@@ -237,10 +273,11 @@ void init() {
 int main(int argc, char** argv) {
 	init();
 	TGAImage image(WIDTH, HEIGHT, TGAImage::RGB);
-	render(model, WIDTH, HEIGHT, image, 2);
+	render(model, WIDTH, HEIGHT, DEPTH, image, 8);
 	image.flip_vertically(); // origin at the left bottom corner of the image
 	image.write_tga_file("output2.tga");
 	delete model;
+	delete [] zbuffer;
 	return 0;
 }
 
