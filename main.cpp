@@ -213,7 +213,7 @@ void render(Model *model, int width, int height, TGAImage &image, float scale) {
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
 	
-        Vec3f screenCords[3];
+        Vec3f screenCoords[3];
 		Vec3f worldCoords[3];
         for (int j = 0; j < 3; j++) {
 			Vec3f v = model->vert(face[j]);
