@@ -18,7 +18,23 @@ Model *model = NULL;
 int *zbuffer = NULL;
 
 Vec3f lightDir(0, 0, -1);
-Vec3f camera(0, 0, 3);
+Vec3f eye(1, 1, 3);
+Vec3f center(0, 0, 0);
+
+Matrix lookat(Vec3f center, Vec3f eye, Vec3f up) {
+	Vec3f z = (eye - center).normalize();
+	Vec3f x = (up ^ z).normalize();
+	Vec3f y = (z ^ x).normalize();
+	Matrix Minv = Matrix::identity(4);
+    Matrix Tr   = Matrix::identity(4);
+    for (int i = 0; i < 3; i++) {
+        Minv[0][i] = x[i];
+        Minv[1][i] = y[i];
+        Minv[2][i] = z[i];
+        Tr[i][3] = -center[i];
+    }
+    return Minv * Tr;
+}
 
 Vec3f matrixToVector(Matrix m) {
 	return Vec3f(m[0][0] / m[3][0], m[1][0] / m[3][0], m[2][0] / m[3][0]);
@@ -238,7 +254,14 @@ void render(Model *model, int width, int height, int depth, TGAImage &image, flo
 
 	Matrix Projection = Matrix::identity(4);
     Matrix ViewPort   = viewport(width / scale, height / scale, width * 3 / 4, height * 3 / 4, depth);
-    Projection[3][2] = -1.f / camera.z;
+	Matrix ModelView  = lookat(eye, center, Vec3f(0, 1, 0));
+    Projection[3][2] = -1.f / (eye-center).norm();
+
+	std::cerr << ModelView << std::endl;
+    std::cerr << Projection << std::endl;
+    std::cerr << ViewPort << std::endl;
+    Matrix transformed = (ViewPort * Projection * ModelView);
+    std::cerr << transformed << std::endl;
 
 	for (int i = 0; i < model->nfaces(); i++) {
 		std::vector<int> face = model->face(i);
@@ -247,7 +270,7 @@ void render(Model *model, int width, int height, int depth, TGAImage &image, flo
 		Vec3f worldCoords[3];
         for (int j = 0; j < 3; j++) {
 			Vec3f v = model->vert(face[j]);
-			screenCoords[j] = matrixToVector(ViewPort * Projection * vectorToMatrix(v));
+			screenCoords[j] = matrixToVector(ViewPort * Projection * ModelView * vectorToMatrix(v));
 			worldCoords[j] = v;
 		}
 		Vec3f n = (worldCoords[2] - worldCoords[0]) ^ (worldCoords[1] - worldCoords[0]);
