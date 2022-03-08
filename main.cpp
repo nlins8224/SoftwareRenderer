@@ -25,15 +25,14 @@ Matrix lookat(Vec3f center, Vec3f eye, Vec3f up) {
 	Vec3f z = (eye - center).normalize();
 	Vec3f x = (up ^ z).normalize();
 	Vec3f y = (z ^ x).normalize();
-	Matrix Minv = Matrix::identity(4);
-    Matrix Tr   = Matrix::identity(4);
+	Matrix res = Matrix::identity(4);
     for (int i = 0; i < 3; i++) {
-        Minv[0][i] = x[i];
-        Minv[1][i] = y[i];
-        Minv[2][i] = z[i];
-        Tr[i][3] = -center[i];
+        res[0][i] = x[i];
+        res[1][i] = y[i];
+        res[2][i] = z[i];
+        res[i][3] = -center[i];
     }
-    return Minv * Tr;
+    return res;
 }
 
 Vec3f matrixToVector(Matrix m) {
