@@ -11,7 +11,7 @@ class GouraudShader : public IShader {
     Vec3f varying_intensity {}; // written by vertex shader, read by fragment shader
 
     public:
-    GouraudShader(Model* model, Vec3f light_dir);
+    GouraudShader(Model& model, Vec3f light_dir);
     Vec4f vertex(const int iface, const int nthvert) override;
     bool fragment(const Vec3f bar, TGAColor& color)  override;
 };
