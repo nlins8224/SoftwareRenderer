@@ -37,8 +37,7 @@ void lookat(Vec3f eye, Vec3f center, Vec3f up) {
     }
 }
 
-Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
-	/*
+/*
 	 Cross product of V1 and V2 gives barycentric coordinates parameters
 	 AB, AC, PA are vectors
 
@@ -52,7 +51,9 @@ Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
 	 P(u, v) = A + uAB + vAC
 	 A - P + uAB + vAC = 0
 	 PA + uAB + vAC = 0
-	*/
+*/
+Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
+
 	Vec3f V1 = Vec3f(
 		C.x - A.x,     // AC_x
 	    B.x - A.x,     // AB_x
@@ -104,6 +105,7 @@ void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
  	Vec2i P;
     TGAColor color;
  	/* for each pixel in bounding box check if it is inside triangle and if should be rendered */
+	// TODO: could be for each?
  	for (P.x = boundingBoxMin.x; P.x <= boundingBoxMax.x; P.x++) {
  		for (P.y = boundingBoxMin.y; P.y <= boundingBoxMax.y; P.y++) {
  			Vec3f c = barycentric(proj<2>(pts[0] / pts[0][3]), proj<2>(pts[1] / pts[1][3]), proj<2>(pts[2] / pts[2][3]), proj<2>(P));
