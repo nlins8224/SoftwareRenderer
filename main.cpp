@@ -49,11 +49,11 @@ void render(Model *model, int width, int height, int depth, float scale) {
 	TGAImage image  (width, height, TGAImage::RGB);
     TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
 
-	std::cerr << ModelView << std::endl;
-    std::cerr << Projection << std::endl;
-    std::cerr << Viewport << std::endl;
-    Matrix transformed = (Viewport * Projection * ModelView);
-    std::cerr << transformed << std::endl;
+	// std::cerr << ModelView << std::endl;
+    // std::cerr << Projection << std::endl;
+    // std::cerr << Viewport << std::endl;
+    // Matrix transformed = (Viewport * Projection * ModelView);
+    // std::cerr << transformed << std::endl;
 
     GouraudShader shader;
 	for (int i = 0; i < model->nfaces(); i++) {

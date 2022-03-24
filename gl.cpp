@@ -103,7 +103,6 @@ void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
 		    boundingBoxMax[j] = std::max(boundingBoxMax[j], pts[i][j] / pts[i][3]);
  		}
  	}
-
  	Vec2i P;
     TGAColor color;
  	/* for each pixel in bounding box check if it is inside triangle and if should be rendered */
