@@ -22,7 +22,7 @@ Vec3f        up(0, 1, 0);
 /*
 TODO: move matrices to prepareMatrices function
  */
-void render(Model *model, int width, int height, int depth, float scale) {
+void render(Model *model, int width, int height, int depth) {
 
 	lookat(eye, center, up);
     viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
@@ -65,8 +65,7 @@ void init() {
 
 int main() {
 	init();
-	float scale = 8;
-	render(model, WIDTH, HEIGHT, DEPTH, scale);
+	render(model, WIDTH, HEIGHT, DEPTH);
 	return 0;
 }
 

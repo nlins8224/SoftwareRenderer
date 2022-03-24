@@ -7,8 +7,6 @@ Matrix ModelView;
 Matrix Viewport;
 Matrix Projection;
 
-IShader::~IShader() {}
-
 void viewport(int x, int y, int w, int h, int d) {
 	Viewport = Matrix::identity();
 	// Scale
