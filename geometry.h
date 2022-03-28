@@ -111,6 +111,7 @@ template<typename T> struct dt<1,T> {
 
 /////////////////////////////////////////////////////////////////////////////////
 
+//TODO: This should be in separate file
 template<size_t DimRows,size_t DimCols,typename T> class mat {
     vec<DimCols,T> rows[DimRows];
 public:

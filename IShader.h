@@ -11,7 +11,7 @@ class IShader {
 
     IShader(Model& model): m_model{model} {};
     virtual Vec4f vertex(const int iface, const int nthvert) = 0;
-    virtual bool fragment(const Vec3f bar, TGAColor &color) = 0;
+    virtual bool fragment(const Vec3f bar, TGAColor& color) = 0;
     virtual ~IShader() {};
 };
 
