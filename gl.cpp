@@ -3,12 +3,12 @@
 #include <cstdlib>
 #include "gl.h"
 
-Matrix ModelView;
-Matrix Viewport;
-Matrix Projection;
+Matrix4f ModelView;
+Matrix4f Viewport;
+Matrix4f Projection;
 
 void viewport(int x, int y, int w, int h, int d) {
-	Viewport = Matrix::identity();
+	Viewport = Matrix4f::identity();
 	// Scale
 	Viewport[0][0] = w / 2.f;
 	Viewport[1][1] = h / 2.f;
@@ -20,15 +20,16 @@ void viewport(int x, int y, int w, int h, int d) {
 }
 
 void projection(float coeff) {
-	Projection = Matrix::identity();
+	Projection = Matrix4f::identity();
     Projection[3][2] = coeff;
 }
 
 void lookat(Vec3f eye, Vec3f center, Vec3f up) {
-	Vec3f z = (eye - center).normalize();
-	Vec3f x = cross(up, z).normalize();
-	Vec3f y = cross(z, x).normalize();
-	ModelView = Matrix::identity();
+	/* could be bugged here normalized -> normalize */
+	Vec3f z = (eye - center).normalized();
+	Vec3f x = cross_prod(up, z).normalized();
+	Vec3f y = cross_prod(z, x).normalized();
+	ModelView = Matrix4f::identity();
     for (int i = 0; i < 3; i++) {
         ModelView[0][i] = x[i];
         ModelView[1][i] = y[i];
@@ -53,7 +54,7 @@ void lookat(Vec3f eye, Vec3f center, Vec3f up) {
 	 PA + uAB + vAC = 0
 */
 Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
-
+	
 	Vec3f V1 = Vec3f(
 		C.x - A.x,     // AC_x
 	    B.x - A.x,     // AB_x
@@ -66,7 +67,7 @@ Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
 		A.y - P.y	   // PA_y
 	);
 
-	Vec3f u = cross(V1, V2);
+	Vec3f u = cross_prod(V1, V2);
 
 	// degenerate case
 	if (std::abs(u.z) < 1) return Vec3f(-1, 1, 1);

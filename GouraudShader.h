@@ -1,7 +1,7 @@
 #ifndef GOURAUDSHADER_H
 #define GOURAUDSHADER_H
 #include "model.h"
-#include "geometry.h"
+#include "Vec.h"
 #include "gl.h"
 #include "IShader.h"
 

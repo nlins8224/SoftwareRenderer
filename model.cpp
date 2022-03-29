@@ -103,6 +103,7 @@ float Model::specular(Vec2f uvf) {
 
 Vec3f Model::normal(int iface, int nthvert) {
     int idx = faces_[iface][nthvert][2];
-    return norms_[idx].normalize();
+    norms_[idx] = norms_[idx].normalized();
+    return norms_[idx];
 }
 

@@ -2,12 +2,13 @@
 #define __GL_H__
 
 #include "tgaimage.h"
-#include "geometry.h"
+#include "Vec.h"
+#include "Matrix.h"
 #include "IShader.h"
 
-extern Matrix ModelView;
-extern Matrix Viewport;
-extern Matrix Projection;
+extern Matrix4f ModelView;
+extern Matrix4f Viewport;
+extern Matrix4f Projection;
 
 void viewport(int x, int y, int w, int h, int d);
 void projection(float coeff=0.f); // coeff = -1/c

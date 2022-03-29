@@ -3,7 +3,8 @@
 
 #include "tgaimage.h"
 #include "model.h"
-#include "geometry.h"
+#include "Vec.h"
+#include "Matrix.h"
 #include "gl.h"
 #include "GouraudShader.h"
 
@@ -27,7 +28,7 @@ void render(Model& model, int width, int height, int depth) {
 	lookat(eye, center, up);
     viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
     projection(-1.f/(eye - center).norm());
-    lightDir.normalize();
+    lightDir = lightDir.normalized();
 
 	TGAImage image  (width, height, TGAImage::RGB);
     TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);

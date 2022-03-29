@@ -2,7 +2,8 @@
 #define __MODEL_H__
 #include <vector>
 #include <string>
-#include "geometry.h"
+#include "Vec.h"
+#include "Matrix.h"
 #include "tgaimage.h"
 
 class Model {
