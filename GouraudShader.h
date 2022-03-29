@@ -8,7 +8,7 @@
 class GouraudShader : public IShader {
     private:
     Vec3f m_light_dir {};
-    Vec3f varying_intensity {}; // written by vertex shader, read by fragment shader
+    Vec3f m_varying_intensity {};
 
     public:
     GouraudShader(Model& model, Vec3f light_dir);

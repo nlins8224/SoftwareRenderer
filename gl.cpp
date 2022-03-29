@@ -92,6 +92,7 @@ int calculateFragDepth(Vec4f *pts, Vec3f barycentric) {
 /* 
 For each pixel in bounding box if pixel is inside triangle then color that pixel
 */
+//TODO: *pts -> ...args
 void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
  	Vec2f boundingBoxMax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
  	Vec2f boundingBoxMin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());

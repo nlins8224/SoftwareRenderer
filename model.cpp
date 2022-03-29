@@ -3,6 +3,7 @@
 #include <sstream>
 #include "model.h"
 
+//TODO: error handling
 Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffusemap_(), normalmap_(), specularmap_() {
     std::ifstream in;
     in.open (filename, std::ifstream::in);
@@ -12,22 +13,22 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffus
         std::getline(in, line);
         std::istringstream iss(line.c_str());
         char trash;
-        if (!line.compare(0, 2, "v ")) {
+        if (line.compare(0, 2, "v ") == 0) {
             iss >> trash;
             Vec3f v;
             for (int i=0;i<3;i++) iss >> v[i];
             verts_.push_back(v);
-        } else if (!line.compare(0, 3, "vn ")) {
+        } else if (line.compare(0, 3, "vn ") == 0) {
             iss >> trash >> trash;
             Vec3f n;
             for (int i=0;i<3;i++) iss >> n[i];
             norms_.push_back(n);
-        } else if (!line.compare(0, 3, "vt ")) {
+        } else if (line.compare(0, 3, "vt ") == 0) {
             iss >> trash >> trash;
             Vec2f uv;
             for (int i=0;i<2;i++) iss >> uv[i];
             uv_.push_back(uv);
-        }  else if (!line.compare(0, 2, "f ")) {
+        }  else if (line.compare(0, 2, "f ") == 0) {
             std::vector<Vec3i> f;
             Vec3i tmp;
             iss >> trash;
@@ -39,6 +40,7 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffus
         }
     }
     std::cerr << "# v# " << verts_.size() << " f# "  << faces_.size() << " vt# " << uv_.size() << " vn# " << norms_.size() << std::endl;
+    //TODO: normalmaps, specularmaps, etc. should be optional
     load_texture(filename, "_diffuse.tga", diffusemap_);
     load_texture(filename, "_nm.tga",      normalmap_);
     load_texture(filename, "_spec.tga",    specularmap_);
@@ -46,6 +48,7 @@ Model::Model(const char *filename) : verts_(), faces_(), norms_(), uv_(), diffus
 
 Model::~Model() {}
 
+//TODO: static cast
 int Model::nverts() {
     return (int)verts_.size();
 }
@@ -68,6 +71,7 @@ Vec3f Model::vert(int iface, int nthvert) {
     return verts_[faces_[iface][nthvert][0]];
 }
 
+//TODO: smart pointers
 void Model::load_texture(std::string filename, const char *suffix, TGAImage &img) {
     std::string texfile(filename);
     size_t dot = texfile.find_last_of(".");

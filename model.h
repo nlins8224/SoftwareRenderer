@@ -6,6 +6,7 @@
 #include "Matrix.h"
 #include "tgaimage.h"
 
+//TODO: better names
 class Model {
 private:
     std::vector<Vec3f> verts_;
