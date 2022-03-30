@@ -110,11 +110,15 @@ void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
 	// TODO: could be for each?
  	for (P.x = boundingBoxMin.x; P.x <= boundingBoxMax.x; P.x++) {
  		for (P.y = boundingBoxMin.y; P.y <= boundingBoxMax.y; P.y++) {
- 			Vec3f c = barycentric(proj<2>(pts[0] / pts[0][3]), proj<2>(pts[1] / pts[1][3]), proj<2>(pts[2] / pts[2][3]), proj<2>(P));
- 			int fragDepth = calculateFragDepth(pts, c);
- 			//TODO: Move this to separate function
- 			if (!inTriangle(c) || zbuffer.get(P.x, P.y)[0] > fragDepth) continue;
- 			bool discard = shader.fragment(c, color);
+ 			Vec3f bar = barycentric(proj<2>(pts[0] / pts[0][3]), 
+			 						proj<2>(pts[1] / pts[1][3]), 
+									proj<2>(pts[2] / pts[2][3]), 
+									proj<2>(P));
+
+ 			int fragDepth = calculateFragDepth(pts, bar);
+ 			//TODO: Move this to separate function (isVisible)
+ 			if (!inTriangle(bar) || zbuffer.get(P.x, P.y)[0] > fragDepth) continue;
+ 			bool discard = shader.fragment(bar, color);
  			if (!discard) {
  				zbuffer.set(P.x, P.y, TGAColor(fragDepth));
  				image.set(P.x, P.y, color);

@@ -6,7 +6,7 @@
 #include "Vec.h"
 #include "Matrix.h"
 #include "gl.h"
-#include "GouraudShader.h"
+#include "TexturedShader.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 800;
@@ -39,7 +39,7 @@ void render(Model& model, int width, int height, int depth) {
     // Matrix transformed = (Viewport * Projection * ModelView);
     // std::cerr << transformed << std::endl;
 
-    GouraudShader shader{ model, lightDir };
+    TexturedShader shader{ model, lightDir };
 	for (int i = 0; i < model.nfaces(); i++) {
         Vec4f screenCoords[3];
 
