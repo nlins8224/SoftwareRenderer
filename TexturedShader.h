@@ -11,8 +11,8 @@ class TexturedShader : public IShader {
     Vec3f m_varying_intensity{};
     Matrix<2, 3, float> m_varying_uv{};
 
-    Vec4f vertex(int iface, int nthvert) override {
-        m_varying_uv.set_column(nthvert, model->uv(iface, nthvert));
+    Vec4f vertex(int face_idx, int vertex_idx) override {
+        m_varying_uv.set_column(vertex_idx, model->uv(face_idx, vertex_idx));
     }
 }
 

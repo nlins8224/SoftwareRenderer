@@ -9,8 +9,14 @@
 //TODO: better names
 class Model {
 private:
+    /* xyz coordinates of vertex */
     std::vector<Vec3f> m_verts;
-    std::vector<std::vector<Vec3i> > m_faces; // attention, this Vec3i means vertex/uv/normal
+    /* 
+    m_faces[face_index][vertex_index][vertex_type], 
+    Vec3i means vertex/uv/normal
+    for example m_faces[1][2][1] means second face, third vertex, uv 
+    */
+    std::vector<std::vector<Vec3i> > m_faces;
     std::vector<Vec3f> m_norms;
     std::vector<Vec2f> m_uv;
     TGAImage m_diffusemap;

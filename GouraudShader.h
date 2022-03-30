@@ -12,7 +12,7 @@ class GouraudShader : public IShader {
 
     public:
     GouraudShader(Model& model, Vec3f light_dir);
-    Vec4f vertex(const int iface, const int nthvert) override;
+    Vec4f vertex(const int face_idx, const int vertex_idx) override;
     bool fragment(const Vec3f bar, TGAColor& color)  override;
 };
 #endif // GOURAUDSHADER_H

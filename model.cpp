@@ -54,36 +54,48 @@ Model::Model(const char *filename)
 
 Model::~Model() {}
 
-//TODO: static cast
 int Model::nverts() {
-    return (int)m_verts.size();
+    return static_cast<int>(m_verts.size());
 }
 
 int Model::nfaces() {
-    return (int)m_faces.size();
+    return static_cast<int>(m_faces.size());
 }
 
 std::vector<int> Model::face(int idx) {
     std::vector<int> face;
-    for (int i = 0; i < (int)m_faces[idx].size(); i++) 
+    for (int i = 0; i < static_cast<int>(m_faces[idx].size()); i++) 
         face.push_back(m_faces[idx][i][0]);
     return face;
 }
 
-Vec3f Model::vert(int i) {
-    return m_verts[i];
+Vec3f Model::vert(int idx) {
+    return m_verts[idx];
 }
 
-Vec3f Model::vert(int iface, int nthvert) {
-    return m_verts[m_faces[iface][nthvert][0]];
+/* return xyz geometric coordinates of face_idx face nthvertex */
+Vec3f Model::vert(int face_idx, int vertex_idx) {
+    return m_verts[m_faces[face_idx][vertex_idx][0]];
 }
 
-//TODO: smart pointers
+/* return xyz texture coordinates of face_idx face nthvertex */
+Vec2f Model::uv(int face_idx, int vertex_idx) {
+    return m_uv[m_faces[face_idx][vertex_idx][1]];
+}
+
+/* return xyz normal coordinates of face_idx face nthvertex */
+Vec3f Model::normal(int face_idx, int vertex_idx) {
+    int idx = m_faces[face_idx][vertex_idx][2];
+    m_norms[idx] = m_norms[idx].normalized();
+    return m_norms[idx];
+}
+
+//TODO: std::string
 void Model::load_texture(std::string filename, const char *suffix, TGAImage &img) {
     std::string texfile(filename);
     size_t dot = texfile.find_last_of(".");
-    if (dot!=std::string::npos) {
-        texfile = texfile.substr(0,dot) + std::string(suffix);
+    if (dot != std::string::npos) {
+        texfile = texfile.substr(0, dot) + std::string(suffix);
         std::cerr << "texture file " << texfile << " loading " << (img.read_tga_file(texfile.c_str()) ? "ok" : "failed") << std::endl;
         img.flip_vertically();
     }
@@ -103,18 +115,7 @@ Vec3f Model::normal(Vec2f uvf) {
     return res;
 }
 
-Vec2f Model::uv(int iface, int nthvert) {
-    return m_uv[m_faces[iface][nthvert][1]];
-}
-
 float Model::specular(Vec2f uvf) {
     Vec2i uv(uvf[0]*m_specularmap.get_width(), uvf[1]*m_specularmap.get_height());
     return m_specularmap.get(uv[0], uv[1])[0]/1.f;
 }
-
-Vec3f Model::normal(int iface, int nthvert) {
-    int idx = m_faces[iface][nthvert][2];
-    m_norms[idx] = m_norms[idx].normalized();
-    return m_norms[idx];
-}
-
