@@ -9,13 +9,13 @@
 //TODO: better names
 class Model {
 private:
-    std::vector<Vec3f> verts_;
-    std::vector<std::vector<Vec3i> > faces_; // attention, this Vec3i means vertex/uv/normal
-    std::vector<Vec3f> norms_;
-    std::vector<Vec2f> uv_;
-    TGAImage diffusemap_;
-    TGAImage normalmap_;
-    TGAImage specularmap_;
+    std::vector<Vec3f> m_verts;
+    std::vector<std::vector<Vec3i> > m_faces; // attention, this Vec3i means vertex/uv/normal
+    std::vector<Vec3f> m_norms;
+    std::vector<Vec2f> m_uv;
+    TGAImage m_diffusemap;
+    TGAImage m_normalmap;
+    TGAImage m_specularmap;
     void load_texture(std::string filename, const char *suffix, TGAImage &img);
 public:
     Model(const char *filename);
