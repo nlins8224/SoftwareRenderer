@@ -15,6 +15,6 @@ bool NormalMappingShader::fragment(const Vec3f bar, TGAColor& color) {
     Vec3f normal = proj<3>(m_uniform_PMVIT * embed<4>(m_model.normal(uv))).normalized(); 
     Vec3f light = proj<3>(m_uniform_PMV * embed<4>(m_light_dir)).normalized();
     float intensity = std::max(0.f, normal * light);
-    color = m_model.diffuse(uv) * intensity;
+    color = TGAColor(255, 255, 255) * intensity;
     return false;
     }
