@@ -1,5 +1,5 @@
-#ifndef NORMAL_MAPPING_SHADER
-#define NORMAL_MAPPING_SHADER
+#ifndef NORMAL_MAPPING_SHADER_H
+#define NORMAL_MAPPING_SHADER_H
 #include "IShader.h"
 #include "Vec.h"
 #include "Matrix.h"
@@ -28,4 +28,4 @@ class NormalMappingShader : public IShader {
     }
 };
 
-#endif // PHONG_SHADER_H
+#endif // NORMAL_MAPPING_SHADER_H

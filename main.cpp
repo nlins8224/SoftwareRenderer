@@ -6,7 +6,7 @@
 #include "Vec.h"
 #include "Matrix.h"
 #include "gl.h"
-#include "NormalMappingShader.h"
+#include "PhongShader.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 800;
@@ -39,7 +39,7 @@ void render(Model& model, int width, int height, int depth) {
     // Matrix transformed = (Viewport * Projection * ModelView);
     // std::cerr << transformed << std::endl;
 
-    NormalMappingShader shader{ model, lightDir };
+    PhongShader shader{ model, lightDir };
     shader.set_uniform_PMV(Projection * ModelView);
     shader.set_uniform_PMVIT((Projection * ModelView).invert_transpose());
 	for (int i = 0; i < model.nfaces(); i++) {

@@ -244,6 +244,18 @@ Vec<Dim, T> operator * (Vec<Dim, T> lhs, T value) {
     return lhs;
 }
 
+template <std::size_t Dim, typename T, typename U>
+Vec<Dim, T> operator * (Vec<Dim, T> lhs, U value) {
+    lhs *= static_cast<T>(value);
+    return lhs;
+}
+
+template <std::size_t Dim, typename T, typename U>
+Vec<Dim, T> operator * (U value, Vec<Dim, T> lhs) {
+    lhs *= static_cast<T>(value);
+    return lhs;
+}
+
 template <std::size_t Dim, typename T>
 Vec<Dim, T> operator / (Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
     lhs /= rhs;
