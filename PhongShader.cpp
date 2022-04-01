@@ -11,13 +11,17 @@ Vec4f PhongShader::vertex(const int face_idx, const int vertex_idx) {
 
 bool PhongShader::fragment(const Vec3f bar, TGAColor& color) {
     Vec2f uv = m_varying_uv * bar;
-    Vec3f normal = proj<3>(m_uniform_PMVIT * embed<4>(m_model.normal(uv))).normalized(); 
-    Vec3f light = proj<3>(m_uniform_PMV * embed<4>(m_light_dir)).normalized();
-    Vec3f reflection = (2.f * normal * normal * light - light).normalized();  // phong reflection formula
-    float specular = pow(std::max(reflection.z, 0.0f), m_model.specular(uv));
-    float diffuse = std::max(0.f, normal * light);
+    Vec3f normal = m_model.normal(uv);
+    Vec3f reflected_light = normal * normal * m_light_dir * 2.f - m_light_dir; // light reflection formula
+    float specular = pow(std::max(reflected_light.z / reflected_light.norm(), 0.0f), m_model.specular(uv));
+    float diffuse = std::max(0.f, normal * m_light_dir);
+    float ambient = .1f;
+
+    float coeff = normal * m_light_dir;
+
+    TGAColor diff = m_model.diffuse(uv) * coeff;
     color = m_model.diffuse(uv);
     for (int i = 0; i < 3; i++) 
-        color[i] = std::min<float>(2 + color[i] * (0.8f * diffuse + 5.0f * specular), 255);
+        color[i] = std::min<float>(5 + diff[i] * (diffuse + specular), 255.f);
     return false;
     }

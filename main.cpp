@@ -48,9 +48,6 @@ TODO: move matrices to prepareMatrices function
  */
 void render(Model& model, int width, int height, int depth) {
 
-	lookat(eye, center, up);
-    viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
-    projection(-1.f/(eye - center).norm());
     lightDir = lightDir.normalized();
 
 	TGAImage image  (width, height, TGAImage::RGB);
@@ -65,6 +62,10 @@ void render(Model& model, int width, int height, int depth) {
     #if SHADOWS_ENABLED
         render_shadow(model, width, height, depth);
     #endif
+
+    lookat(eye, center, up);
+    viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
+    projection(-1.f/(eye - center).norm());
     
     PhongShader shader{ model, lightDir };
     shader.set_uniform_PMV(Projection * ModelView);
