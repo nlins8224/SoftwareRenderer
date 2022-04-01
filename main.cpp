@@ -53,12 +53,6 @@ void render(Model& model, int width, int height, int depth) {
 	TGAImage image  (width, height, TGAImage::RGB);
     TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
 
-	// std::cerr << ModelView << std::endl;
-    // std::cerr << Projection << std::endl;
-    // std::cerr << Viewport << std::endl;
-    // Matrix transformed = (Viewport * Projection * ModelView);
-    // std::cerr << transformed << std::endl;
-
     #if SHADOWS_ENABLED
         render_shadow(model, width, height, depth);
     #endif
