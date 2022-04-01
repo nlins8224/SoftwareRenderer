@@ -1,8 +1,8 @@
 #ifndef GOURAUDSHADER_H
 #define GOURAUDSHADER_H
-#include "model.h"
-#include "Vec.h"
-#include "gl.h"
+#include "../model.h"
+#include "../Math/Vec.h"
+#include "../gl.h"
 #include "IShader.h"
 
 class GouraudShader : public IShader {

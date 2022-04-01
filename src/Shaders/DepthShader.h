@@ -1,10 +1,10 @@
 #ifndef DEPTH_SHADER_H
 #define DEPTH_SHADER_H
 #include "IShader.h"
-#include "Vec.h"
-#include "Matrix.h"
-#include "model.h"
-#include "gl.h"
+#include "../Math/Vec.h"
+#include "../Math/Matrix.h"
+#include "../model.h"
+#include "../gl.h"
 
 class DepthShader : public IShader {
     private: 

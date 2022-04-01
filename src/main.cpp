@@ -3,11 +3,11 @@
 
 #include "tgaimage.h"
 #include "model.h"
-#include "Vec.h"
-#include "Matrix.h"
+#include "Math/Vec.h"
+#include "Math/Matrix.h"
 #include "gl.h"
-#include "PhongShader.h"
-#include "DepthShader.h"
+#include "Shaders/PhongShader.h"
+#include "Shaders/DepthShader.h"
 
 #define SHADOWS_ENABLED 1
 
@@ -81,7 +81,7 @@ void render(Model& model, int width, int height, int depth) {
 
 int main() {
     // TODO: check if file exists, ptr could be null
-	Model* ptr_model = new Model("obj/african_head.obj");
+	Model* ptr_model = new Model("../obj/african_head.obj");
     // TODO: Model class should have reference constructor?
     Model& model { *ptr_model };
 	render(model, WIDTH, HEIGHT, DEPTH);

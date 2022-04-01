@@ -2,9 +2,9 @@
 #define __GL_H__
 
 #include "tgaimage.h"
-#include "Vec.h"
-#include "Matrix.h"
-#include "IShader.h"
+#include "./Math/Vec.h"
+#include "./Math/Matrix.h"
+#include "./Shaders/IShader.h"
 
 extern Matrix4f ModelView;
 extern Matrix4f Viewport;

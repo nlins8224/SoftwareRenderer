@@ -2,8 +2,8 @@
 #define __MODEL_H__
 #include <vector>
 #include <string>
-#include "Vec.h"
-#include "Matrix.h"
+#include "./Math/Vec.h"
+#include "./Math/Matrix.h"
 #include "tgaimage.h"
 
 //TODO: better names

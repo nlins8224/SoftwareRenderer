@@ -1,8 +1,8 @@
 #ifndef ISHADER_H
 #define ISHADER_H
 
-#include "model.h"
-#include "tgaimage.h"
+#include "../model.h"
+#include "../tgaimage.h"
 
 class IShader {
     protected:
