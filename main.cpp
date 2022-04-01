@@ -68,8 +68,6 @@ void render(Model& model, int width, int height, int depth) {
     projection(-1.f/(eye - center).norm());
     
     PhongShader shader{ model, lightDir };
-    shader.set_uniform_PMV(Projection * ModelView);
-    shader.set_uniform_PMVIT((Projection * ModelView).invert_transpose());
 	for (int i = 0; i < model.nfaces(); i++) {
         Vec4f screenCoords[3];
 
