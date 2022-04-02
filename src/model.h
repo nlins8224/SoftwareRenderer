@@ -10,7 +10,7 @@
 class Model {
 private:
     /* xyz coordinates of vertex */
-    std::vector<Vec3f> m_verts;
+    std::vector<Vec3f> m_verts{};
     /* 
     m_faces[face_index][vertex_index][vertex_type], 
     Vec3i means vertex/uv/normal
@@ -23,8 +23,13 @@ private:
     TGAImage m_normalmap;
     TGAImage m_specularmap;
     void load_texture(std::string filename, const char *suffix, TGAImage &img);
+    void parse(std::string filename);
+    void parse_v(std::istringstream& stream);
+    void parse_vn(std::istringstream& stream);
+    void parse_vt(std::istringstream& stream);
+    void parse_f(std::istringstream& stream);
 public:
-    Model(const char *filename);
+    Model(std::string filename);
     ~Model();
     int nverts();
     int nfaces();

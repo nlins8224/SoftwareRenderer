@@ -4,9 +4,20 @@
 #include "model.h"
 
 //TODO: error handling
-Model::Model(const char *filename)
+Model::Model(std::string filename)
 :m_verts(), m_faces(), m_norms(), m_uv(), m_diffusemap(), m_normalmap(), m_specularmap() {
     //TODO: file reading logic to separate method, support multiple constructors (ex. no normalmap)
+    parse(filename);
+    std::cerr << "# v# " << m_verts.size() << " f# "  << m_faces.size() << " vt# " << m_uv.size() << " vn# " << m_norms.size() << std::endl;
+    //TODO: normalmaps, specularmaps, etc. should be optional
+    load_texture(filename, "_diffuse.tga", m_diffusemap);
+    load_texture(filename, "_nm.tga",      m_normalmap);
+    load_texture(filename, "_spec.tga",    m_specularmap);
+}
+
+Model::~Model() {}
+
+void Model::parse(std::string filename) {
     std::ifstream in;
     in.open (filename, std::ifstream::in);
     if (in.fail()) return;
@@ -16,43 +27,56 @@ Model::Model(const char *filename)
         std::istringstream iss(line.c_str());
         char trash;
         if (line.compare(0, 2, "v ") == 0) {
-            iss >> trash;
-            Vec3f v;
-            for (int i = 0;i < 3; i++) 
-                iss >> v[i];
-            m_verts.push_back(v);
+            parse_v(iss);
         } else if (line.compare(0, 3, "vn ") == 0) {
-            iss >> trash >> trash;
-            Vec3f n;
-            for (int i = 0;i < 3; i++)
-                iss >> n[i];
-            m_norms.push_back(n);
+            parse_vn(iss);
         } else if (line.compare(0, 3, "vt ") == 0) {
-            iss >> trash >> trash;
-            Vec2f uv;
-            for (int i = 0; i < 2; i++) 
-                iss >> uv[i];
-            m_uv.push_back(uv);
-        }  else if (line.compare(0, 2, "f ") == 0) {
-            std::vector<Vec3i> f;
-            Vec3i tmp;
-            iss >> trash;
-            while (iss >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
-                for (int i = 0; i < 3; i++) 
-                    tmp[i]--; // in wavefront obj all indices start at 1, not zero
-                f.push_back(tmp);
-            }
-            m_faces.push_back(f);
+            parse_vt(iss);
+        } else if (line.compare(0, 2, "f ") == 0) {
+            parse_f(iss);
         }
     }
-    std::cerr << "# v# " << m_verts.size() << " f# "  << m_faces.size() << " vt# " << m_uv.size() << " vn# " << m_norms.size() << std::endl;
-    //TODO: normalmaps, specularmaps, etc. should be optional
-    load_texture(filename, "_diffuse.tga", m_diffusemap);
-    load_texture(filename, "_nm.tga",      m_normalmap);
-    load_texture(filename, "_spec.tga",    m_specularmap);
 }
 
-Model::~Model() {}
+void Model::parse_v(std::istringstream& stream) {
+    char trash;
+    stream >> trash;
+    Vec3f v;
+    for (int i = 0; i < 3; i++) 
+        stream >> v[i];
+    m_verts.push_back(v);
+}
+
+void Model::parse_vn(std::istringstream& stream) {
+    char trash;
+    stream >> trash >> trash;
+    Vec3f n;
+    for (int i = 0;i < 3; i++)
+        stream >> n[i];
+    m_norms.push_back(n);
+}
+
+void Model::parse_vt(std::istringstream& stream) {
+    char trash;
+    stream >> trash >> trash;
+    Vec2f uv;
+    for (int i = 0; i < 2; i++) 
+        stream >> uv[i];
+    m_uv.push_back(uv);
+}
+
+void Model::parse_f(std::istringstream& stream) {
+    char trash;
+    std::vector<Vec3i> f;
+    Vec3i tmp;
+    stream >> trash;
+    while (stream >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
+        for (int i = 0; i < 3; i++) 
+            tmp[i]--; // in wavefront obj all indices start at 1, not zero
+        f.push_back(tmp);
+    }
+    m_faces.push_back(f);
+}
 
 int Model::nverts() {
     return static_cast<int>(m_verts.size());
