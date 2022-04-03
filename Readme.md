@@ -8,15 +8,15 @@ This project is a small software renderer which pipeline mimicks that of OpenGL 
 
 ## Some Exmaple Images:
 
-![img1](https://ibb.co/1vjPtD0)
+![PhongShader](https://i.ibb.co/4MrtdQ0/Screenshot-from-2022-04-03-19-14-20.png)
 
-![img2](https://ibb.co/G2mBDp2)
+![GouraudShader](https://i.ibb.co/R2BQcg3/Screenshot-from-2022-04-03-19-08-57.png)
 
-![img3](https://ibb.co/ChSg2jL)
+![DepthShader](https://i.ibb.co/d2Z1vM2/Screenshot-from-2022-04-02-22-29-47.png)
 
-![img4](https://ibb.co/yPXTb8r)
+![TexturedShader](https://i.ibb.co/3BP2zxK/Screenshot-from-2022-04-02-22-05-38.png)
 
-![img5](https://ibb.co/XVmqNCx)
+![TexturedShader](https://i.ibb.co/zHKhgpX/Screenshot-from-2022-04-03-19-11-42.png)
 
-![img6](https://ibb.co/1vpCSGb)
+![NormalMappingShader](https://i.ibb.co/270fccv/Screenshot-from-2022-04-03-19-13-09.png)
 
