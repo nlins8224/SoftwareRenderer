@@ -1,6 +1,6 @@
 # Software Renderer
 
-This project is a small software renderer which pipeline mimicks that of OpenGL in a simplified version. It is based on a [short computer graphics course](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started) written by Dmitry Sokolov. It is written in C++17 and has no dependencies (especially no graphic libraries since the goal was to write one).
+This project is a small software renderer which pipeline mimicks that of OpenGL in a simplified version. It is based on a [short computer graphics course](https://github.com/ssloy/tinyrenderer/wiki/Lesson-0:-getting-started) written by [Dmitry Sokolov](https://github.com/ssloy). It is written in C++17 and has no dependencies (especially no graphic libraries since the goal was to write one).
 
 ## Compilation:
 
@@ -16,7 +16,7 @@ make &&
 
 The rendered image is saved to `output.tga` in `build`
 
-## Some Exmaple Images:
+## Example Images:
 
 ![PhongShader](https://i.ibb.co/4MrtdQ0/Screenshot-from-2022-04-03-19-14-20.png)
 
