@@ -15,9 +15,6 @@ const int WIDTH = 800;
 const int HEIGHT = 800;
 const int DEPTH = 255;
 
-//TODO: smart pointers
-int *zbuffer = NULL;
-
 Vec3f  lightDir(1, 1, 1);
 Vec3f       eye(1, 1, 3);
 Vec3f    center(0, 0, 0);
@@ -43,9 +40,7 @@ void render_shadow(Model& model, int width, int height, int depth) {
     depth_img.write_tga_file("depth.tga");
 
 }
-/*
-TODO: move matrices to prepareMatrices function
- */
+
 void render(Model& model, int width, int height, int depth) {
 
     lightDir = lightDir.normalized();
@@ -80,12 +75,14 @@ void render(Model& model, int width, int height, int depth) {
 }
 
 int main() {
+    //TODO: smart pointers
+    int *zbuffer = NULL;
     // TODO: check if file exists, ptr could be null
 	Model* ptr_model = new Model("../obj/african_head.obj");
-    // TODO: Model class should have reference constructor?
     Model& model { *ptr_model };
 	render(model, WIDTH, HEIGHT, DEPTH);
     delete ptr_model;
+    delete zbuffer;
 	return 0;
 }
 

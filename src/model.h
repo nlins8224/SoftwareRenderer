@@ -6,7 +6,6 @@
 #include "./Math/Matrix.h"
 #include "tgaimage.h"
 
-//TODO: better names
 class Model {
 private:
     /* xyz coordinates of vertex */
@@ -17,12 +16,12 @@ private:
     for example m_faces[1][2][1] means second face, third vertex, uv 
     */
     std::vector<std::vector<Vec3i> > m_faces;
-    std::vector<Vec3f> m_norms;
-    std::vector<Vec2f> m_uv;
+    std::vector<Vec3f> m_normals;
+    std::vector<Vec2f> m_textures_uv;
     TGAImage m_diffusemap;
     TGAImage m_normalmap;
     TGAImage m_specularmap;
-    void load_texture(std::string filename, const char *suffix, TGAImage &img);
+    void load_texture(std::string filename, std::string suffix, TGAImage &img);
     void parse(std::string filename);
     void parse_v(std::istringstream& stream);
     void parse_vn(std::istringstream& stream);
@@ -33,13 +32,13 @@ public:
     ~Model();
     int nverts();
     int nfaces();
-    Vec3f normal(int iface, int nthvert);
-    Vec3f normal(Vec2f uv);
-    Vec3f vert(int i);
-    Vec3f vert(int iface, int nthvert);
-    Vec2f uv(int iface, int nthvert);
-    TGAColor diffuse(Vec2f uv);
-    float specular(Vec2f uv);
+    Vec3f normal(int face_idx, int vertex_idx);
+    Vec3f normal(Vec2f textures_uv);
+    Vec3f vert(int idx);
+    Vec3f vert(int face_idx, int vertex_idx);
+    Vec2f uv(int face_idx, int vertex_idx);
+    TGAColor diffuse(Vec2f textures_uv);
+    float specular(Vec2f textures_uv);
     std::vector<int> face(int idx);
 };
 #endif //__MODEL_H__
