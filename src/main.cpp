@@ -15,16 +15,15 @@ const int WIDTH = 800;
 const int HEIGHT = 800;
 const int DEPTH = 255;
 
-Vec3f  lightDir(1, 1, 1);
+Vec3f  light_dir(1, 1, 1);
 Vec3f       eye(1, 1, 3);
 Vec3f    center(0, 0, 0);
 Vec3f        up(0, 1, 0);
 
-
 void render_shadow(Model& model, int width, int height, int depth) {
     TGAImage depth_img(width, height, TGAImage::RGB);
     TGAImage shadowbuffer(width, height, TGAImage::GRAYSCALE);
-    lookat(lightDir, center, up);
+    lookat(light_dir, center, up);
     viewport(width / 8, height / 8, width * 3/4, height * 3/4, depth);
     projection(0);
     
@@ -43,7 +42,7 @@ void render_shadow(Model& model, int width, int height, int depth) {
 
 void render(Model& model, int width, int height, int depth) {
 
-    lightDir = lightDir.normalized();
+    light_dir = light_dir.normalized();
 
 	TGAImage image  (width, height, TGAImage::RGB);
     TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
@@ -56,7 +55,7 @@ void render(Model& model, int width, int height, int depth) {
     viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
     projection(-1.f/(eye - center).norm());
     
-    PhongShader shader{ model, lightDir };
+    PhongShader shader{ model, light_dir };
 	for (int i = 0; i < model.nfaces(); i++) {
         Vec4f screenCoords[3];
 

@@ -30,35 +30,35 @@ class Vec {
     template<typename ...Args>
     Vec(Args... args) : m_data{ args... } {}
 
-    T& operator [] (const std::size_t idx) {
+    T& operator[](const std::size_t idx) {
         return m_data[idx];
     }
-    const T& operator [] (const std::size_t idx) const {
+    const T& operator[](const std::size_t idx) const {
         return m_data[idx];
     }
 
-    Vec<Dim, T>& operator += (Vec<Dim, T>& other) {
+    Vec<Dim, T>& operator+=(Vec<Dim, T>& other) {
         for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] += other.m_data[i];
         }
         return *this;
     }
 
-    Vec<Dim, T>& operator -= (Vec<Dim, T>& other) {
+    Vec<Dim, T>& operator-=(Vec<Dim, T>& other) {
         for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] -= other.m_data[i];
         }
         return *this;
     }
 
-    Vec<Dim, T>& operator *= (T value) {
+    Vec<Dim, T>& operator*=(T value) {
         for (int i = 0; i < Dim; i++) {
             m_data[i] *= value;
         }
         return *this;
     }
 
-    Vec<Dim, T>& operator /= (T value) {
+    Vec<Dim, T>& operator/=(T value) {
         for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] /= value;
         }
@@ -87,28 +87,28 @@ class Vec<2, T> {
             return idx == 0 ? x : y;
         }
 
-         Vec<2, T>& operator += (Vec<2, T>& other) {
+         Vec<2, T>& operator+=(Vec<2, T>& other) {
             x += other.x;
             y += other.y;
 
             return *this;
         }
 
-        Vec<2, T>& operator -= (Vec<2, T>& other) {
+        Vec<2, T>& operator-=(Vec<2, T>& other) {
             x -= other.x;
             y -= other.y;
 
             return *this;
         }
 
-        Vec<2, T>& operator *= (T value) {
+        Vec<2, T>& operator*=(T value) {
             x *= value;
             y *= value;
 
             return *this;
         }
 
-        Vec<2, T>& operator /= (T value) {
+        Vec<2, T>& operator/=(T value) {
             x /= value;
             y /= value;
 
@@ -149,7 +149,7 @@ class Vec<3, T> {
             return (*this) * (l / norm());
         }
 
-        Vec<3, T>& operator += (Vec<3, T>& other) {
+        Vec<3, T>& operator+=(Vec<3, T>& other) {
             x += other.x;
             y += other.y;
             z += other.z;
@@ -157,7 +157,7 @@ class Vec<3, T> {
             return *this;
         }
 
-        Vec<3, T>& operator -= (Vec<3, T>& other) {
+        Vec<3, T>& operator-=(Vec<3, T>& other) {
             x -= other.x;
             y -= other.y;
             z -= other.z;
@@ -165,7 +165,7 @@ class Vec<3, T> {
             return *this;
         }
 
-        Vec<3, T>& operator *= (T value) {
+        Vec<3, T>& operator*=(T value) {
             x *= value;
             y *= value;
             z *= value;
@@ -173,7 +173,7 @@ class Vec<3, T> {
             return *this;
         }
 
-        Vec<3, T>& operator /= (T value) {
+        Vec<3, T>& operator/=(T value) {
             x /= value;
             y /= value;
             z /= value;
@@ -192,7 +192,7 @@ Vec<3, T> cross_prod(Vec<3, T> v1, Vec<3, T> v2) {
 }
 
 
-template <size_t Dim, typename T> std::ostream& operator << (std::ostream& out, Vec<Dim , T>& v) {
+template <size_t Dim, typename T> std::ostream& operator<<(std::ostream& out, Vec<Dim , T>& v) {
     for(std::size_t i = 0; i < Dim; i++) {
         out << v[i] << " " ;
     }
@@ -218,19 +218,19 @@ Vec<Len, T> proj(const Vec<Dim, T> &v) {
 }
 
 template <std::size_t Dim, typename T>
-Vec<Dim, T> operator + (Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
+Vec<Dim, T> operator+(Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
     lhs += rhs;
     return lhs;
 }
 
 template <std::size_t Dim, typename T>
-Vec<Dim, T> operator - (Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
+Vec<Dim, T> operator-(Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
     lhs -= rhs;
     return lhs;
 }
 
 template <std::size_t Dim, typename T>
-T operator * (const Vec<Dim, T>& lhs, const Vec<Dim, T>& rhs) {
+T operator*(const Vec<Dim, T>& lhs, const Vec<Dim, T>& rhs) {
     T result = T();
     for (std::size_t i = 0; i < Dim; i++) {
         result += lhs[i] * rhs[i];
@@ -239,37 +239,37 @@ T operator * (const Vec<Dim, T>& lhs, const Vec<Dim, T>& rhs) {
 }
 
 template <std::size_t Dim, typename T>
-Vec<Dim, T> operator * (Vec<Dim, T> lhs, T value) {
+Vec<Dim, T> operator*(Vec<Dim, T> lhs, T value) {
     lhs *= value;
     return lhs;
 }
 
 template <std::size_t Dim, typename T, typename U>
-Vec<Dim, T> operator * (Vec<Dim, T> lhs, U value) {
+Vec<Dim, T> operator*(Vec<Dim, T> lhs, U value) {
     lhs *= static_cast<T>(value);
     return lhs;
 }
 
 template <std::size_t Dim, typename T, typename U>
-Vec<Dim, T> operator * (U value, Vec<Dim, T> lhs) {
+Vec<Dim, T> operator*(U value, Vec<Dim, T> lhs) {
     lhs *= static_cast<T>(value);
     return lhs;
 }
 
 template <std::size_t Dim, typename T>
-Vec<Dim, T> operator / (Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
+Vec<Dim, T> operator/(Vec<Dim, T> lhs, Vec<Dim, T>& rhs) {
     lhs /= rhs;
     return lhs;
 }
 
 template <std::size_t Dim, typename T>
-Vec<Dim, T> operator / (Vec<Dim, T> lhs, T value) {
+Vec<Dim, T> operator/(Vec<Dim, T> lhs, T value) {
     lhs /= value;
     return lhs;
 }
 
 template <std::size_t Dim, typename T, typename U>
-Vec<Dim, T> operator / (Vec<Dim, T> lhs, U value) {
+Vec<Dim, T> operator/(Vec<Dim, T> lhs, U value) {
     lhs /= static_cast<T>(value);
     return lhs;
 }

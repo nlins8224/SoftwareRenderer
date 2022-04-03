@@ -12,11 +12,11 @@ class Matrix {
         Matrix() = default;
         Matrix(const Matrix& other) = default;
 
-        Vec<dim_cols, T>& operator[] (const std::size_t idx) {
+        Vec<dim_cols, T>& operator[](const std::size_t idx) {
             return m_rows[idx];
         }
 
-        const Vec<dim_cols, T>& operator[] (const std::size_t idx) const {
+        const Vec<dim_cols, T>& operator[](const std::size_t idx) const {
             return m_rows[idx];
         }
 
