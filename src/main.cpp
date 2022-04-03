@@ -74,7 +74,6 @@ void render(Model& model, int width, int height, int depth) {
 }
 
 int main() {
-    // TODO: check if file exists, ptr could be null
 	Model* ptr_model = new Model("../obj/african_head.obj");
     Model& model { *ptr_model };
 	render(model, WIDTH, HEIGHT, DEPTH);
