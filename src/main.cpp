@@ -28,7 +28,7 @@ void render_shadow(Model& model, int width, int height, int depth) {
     projection(0);
     
     DepthShader depth_shader{model, static_cast<float>(depth)};
-    Vec4f screen_coords[3];
+    std::vector<Vec4f> screen_coords(3);
     for (int i = 0; i < model.nfaces(); i++) {
         for (int j = 0; j < 3; j++) {
             screen_coords[j] = depth_shader.vertex(i, j);
@@ -57,12 +57,12 @@ void render(Model& model, int width, int height, int depth) {
     
     PhongShader shader{ model, light_dir };
 	for (int i = 0; i < model.nfaces(); i++) {
-        Vec4f screenCoords[3];
+        std::vector<Vec4f> screen_coords(3);
 
         for (int j = 0; j < 3; j++) {
-			screenCoords[j] = shader.vertex(i, j);
+			screen_coords[j] = shader.vertex(i, j);
 		}
-		triangle(screenCoords, shader, image, zbuffer);
+		triangle(screen_coords, shader, image, zbuffer);
 	}
 
 	/* place the origin in the bottom left corner of the image */

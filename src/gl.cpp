@@ -86,7 +86,7 @@ bool is_visible(int depth, int frag_depth) {
 	return depth < frag_depth;
 }
 
-int calculate_frag_depth(Vec4f *pts, Vec3f barycentric) {
+int calculate_frag_depth(std::vector<Vec4f> pts, Vec3f barycentric) {
  	float z = pts[0][2] * barycentric.x + pts[1][2] * barycentric.y + pts[2][2] * barycentric.z;
  	float w = pts[0][3] * barycentric.x + pts[1][3] * barycentric.y + pts[2][3] * barycentric.z;
  	return std::max(0, std::min(255, int(z / w + .5)));
@@ -95,8 +95,7 @@ int calculate_frag_depth(Vec4f *pts, Vec3f barycentric) {
 /* 
 For each pixel in bounding box if pixel is inside triangle then color that pixel
 */
-//TODO: *pts -> ...args
-void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
+void triangle(std::vector<Vec4f> pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
  	Vec2f bounding_box_max(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
  	Vec2f bounding_box_min(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
 
