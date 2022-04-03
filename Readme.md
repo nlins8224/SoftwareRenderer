@@ -6,6 +6,7 @@ This project is a small software renderer which pipeline mimicks that of OpenGL 
 
 ```
 git clone https://github.com/nlins8224/SoftwareRenderer.git &&
+cd SoftwareRenderer &&
 mkdir build &&
 cd build &&
 cmake ../src &&
