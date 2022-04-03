@@ -30,7 +30,7 @@ void render_shadow(Model& model, int width, int height, int depth) {
     DepthShader depth_shader{model, static_cast<float>(depth)};
     std::vector<Vec4f> screen_coords(3);
     for (int i = 0; i < model.nfaces(); i++) {
-        for (int j = 0; j < 3; j++) {
+        for (int j : {0, 1, 2}) {
             screen_coords[j] = depth_shader.vertex(i, j);
         }
         triangle(screen_coords, depth_shader, depth_img, shadowbuffer);
@@ -53,13 +53,13 @@ void render(Model& model, int width, int height, int depth) {
 
     lookat(eye, center, up);
     viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
-    projection(-1.f/(eye - center).norm());
+    projection(-1.f / (eye - center).norm());
     
     PhongShader shader{ model, light_dir };
 	for (int i = 0; i < model.nfaces(); i++) {
         std::vector<Vec4f> screen_coords(3);
 
-        for (int j = 0; j < 3; j++) {
+        for (int j : {0, 1, 2}) {
 			screen_coords[j] = shader.vertex(i, j);
 		}
 		triangle(screen_coords, shader, image, zbuffer);
@@ -74,14 +74,11 @@ void render(Model& model, int width, int height, int depth) {
 }
 
 int main() {
-    //TODO: smart pointers
-    int *zbuffer = NULL;
     // TODO: check if file exists, ptr could be null
 	Model* ptr_model = new Model("../obj/african_head.obj");
     Model& model { *ptr_model };
 	render(model, WIDTH, HEIGHT, DEPTH);
     delete ptr_model;
-    delete zbuffer;
 	return 0;
 }
 
