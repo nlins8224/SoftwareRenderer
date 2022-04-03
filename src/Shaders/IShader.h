@@ -4,15 +4,16 @@
 #include "../model.h"
 #include "../tgaimage.h"
 
-class IShader {
-    protected:
-    Model& m_model;
-    public:
+class IShader
+{
+protected:
+    Model &m_model;
 
-    IShader(Model& model): m_model{model} {};
+public:
+    IShader(Model &model) : m_model{model} {};
     virtual Vec4f vertex(const int iface, const int nthvert) = 0;
-    virtual bool fragment(const Vec3f bar, TGAColor& color) = 0;
-    virtual ~IShader() {};
+    virtual bool fragment(const Vec3f bar, TGAColor &color) = 0;
+    virtual ~IShader(){};
 };
 
 #endif // ISHADER_H

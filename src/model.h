@@ -6,16 +6,17 @@
 #include "./Math/Matrix.h"
 #include "tgaimage.h"
 
-class Model {
+class Model
+{
 private:
     /* xyz coordinates of vertex */
     std::vector<Vec3f> m_verts{};
-    /* 
-    m_faces[face_index][vertex_index][vertex_type], 
+    /*
+    m_faces[face_index][vertex_index][vertex_type],
     Vec3i means vertex/uv/normal
-    for example m_faces[1][2][1] means second face, third vertex, uv 
+    for example m_faces[1][2][1] means second face, third vertex, uv
     */
-    std::vector<std::vector<Vec3i> > m_faces;
+    std::vector<std::vector<Vec3i>> m_faces;
     std::vector<Vec3f> m_normals;
     std::vector<Vec2f> m_textures_uv;
     TGAImage m_diffusemap;
@@ -23,10 +24,11 @@ private:
     TGAImage m_specularmap;
     void load_texture(std::string filename, std::string suffix, TGAImage &img);
     void parse(std::string filename);
-    void parse_v(std::istringstream& stream);
-    void parse_vn(std::istringstream& stream);
-    void parse_vt(std::istringstream& stream);
-    void parse_f(std::istringstream& stream);
+    void parse_v(std::istringstream &stream);
+    void parse_vn(std::istringstream &stream);
+    void parse_vt(std::istringstream &stream);
+    void parse_f(std::istringstream &stream);
+
 public:
     Model(std::string filename);
     ~Model();
@@ -42,4 +44,3 @@ public:
     std::vector<int> face(int idx);
 };
 #endif //__MODEL_H__
-

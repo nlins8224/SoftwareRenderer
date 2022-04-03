@@ -11,7 +11,7 @@ extern Matrix4f Viewport;
 extern Matrix4f Projection;
 
 void viewport(int x, int y, int w, int h, int d);
-void projection(float coeff=0.f); // coeff = -1/c
+void projection(float coeff = 0.f); // coeff = -1/c
 void lookat(Vec3f eye, Vec3f center, Vec3f up);
 
 void triangle(std::vector<Vec4f> pts, IShader &shader, TGAImage &image, TGAImage &zbuffer);

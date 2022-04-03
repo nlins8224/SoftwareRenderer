@@ -15,75 +15,80 @@ const int WIDTH = 800;
 const int HEIGHT = 800;
 const int DEPTH = 255;
 
-Vec3f  light_dir(1, 1, 1);
-Vec3f       eye(1, 1, 3);
-Vec3f    center(0, 0, 0);
-Vec3f        up(0, 1, 0);
+Vec3f light_dir(1, 1, 1);
+Vec3f eye(1, 1, 3);
+Vec3f center(0, 0, 0);
+Vec3f up(0, 1, 0);
 
-void render_shadow(Model& model, int width, int height, int depth) {
+void render_shadow(Model &model, int width, int height, int depth)
+{
     TGAImage depth_img(width, height, TGAImage::RGB);
     TGAImage shadowbuffer(width, height, TGAImage::GRAYSCALE);
     lookat(light_dir, center, up);
-    viewport(width / 8, height / 8, width * 3/4, height * 3/4, depth);
+    viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
     projection(0);
-    
+
     DepthShader depth_shader{model, static_cast<float>(depth)};
     std::vector<Vec4f> screen_coords(3);
-    for (int i = 0; i < model.nfaces(); i++) {
-        for (int j : {0, 1, 2}) {
+    for (int i = 0; i < model.nfaces(); i++)
+    {
+        for (int j : {0, 1, 2})
+        {
             screen_coords[j] = depth_shader.vertex(i, j);
         }
         triangle(screen_coords, depth_shader, depth_img, shadowbuffer);
     }
-    depth_img.flip_vertically(); 
+    depth_img.flip_vertically();
     depth_img.write_tga_file("depth.tga");
-
 }
 
-void render(Model& model, int width, int height, int depth) {
+void render(Model &model, int width, int height, int depth)
+{
 
     light_dir = light_dir.normalized();
 
-	TGAImage image  (width, height, TGAImage::RGB);
+    TGAImage image(width, height, TGAImage::RGB);
     TGAImage zbuffer(width, height, TGAImage::GRAYSCALE);
 
-    #if SHADOWS_ENABLED
-        render_shadow(model, width, height, depth);
-    #endif
+#if SHADOWS_ENABLED
+    render_shadow(model, width, height, depth);
+#endif
 
     lookat(eye, center, up);
     viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4, depth);
     projection(-1.f / (eye - center).norm());
-    
-    PhongShader shader{ model, light_dir };
-	for (int i = 0; i < model.nfaces(); i++) {
+
+    PhongShader shader{model, light_dir};
+    for (int i = 0; i < model.nfaces(); i++)
+    {
         std::vector<Vec4f> screen_coords(3);
 
-        for (int j : {0, 1, 2}) {
-			screen_coords[j] = shader.vertex(i, j);
-		}
-		triangle(screen_coords, shader, image, zbuffer);
-	}
+        for (int j : {0, 1, 2})
+        {
+            screen_coords[j] = shader.vertex(i, j);
+        }
+        triangle(screen_coords, shader, image, zbuffer);
+    }
 
-	/* place the origin in the bottom left corner of the image */
-	image.  flip_vertically();
+    /* place the origin in the bottom left corner of the image */
+    image.flip_vertically();
     zbuffer.flip_vertically();
-    image.  write_tga_file("output.tga");
+    image.write_tga_file("output.tga");
     zbuffer.write_tga_file("zbuffer.tga");
-
 }
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
+int main(int argc, char **argv)
+{
+    if (argc != 2)
+    {
         std::cerr << "Invalid input." << std::endl;
         std::cerr << "Usage: ./renderer <obj_path>" << std::endl;
         std::cerr << "Example: ./renderer ../obj/cat.obj" << std::endl;
         return 1;
     }
-	Model* ptr_model = new Model(argv[1]);
-    Model& model { *ptr_model };
-	render(model, WIDTH, HEIGHT, DEPTH);
+    Model *ptr_model = new Model(argv[1]);
+    Model &model{*ptr_model};
+    render(model, WIDTH, HEIGHT, DEPTH);
     delete ptr_model;
-	return 0;
+    return 0;
 }
-
