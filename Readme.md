@@ -4,7 +4,16 @@ This project is a small software renderer which pipeline mimicks that of OpenGL 
 
 ## Compilation:
 
-## Pipeline:
+```
+git clone https://github.com/nlins8224/SoftwareRenderer.git &&
+mkdir build &&
+cd build &&
+cmake ../src &&
+make && 
+./renderer ../obj/head.obj
+```
+
+The rendered image is saved to `output.tga` in `build`
 
 ## Some Exmaple Images:
 

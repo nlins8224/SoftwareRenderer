@@ -73,8 +73,14 @@ void render(Model& model, int width, int height, int depth) {
 
 }
 
-int main() {
-	Model* ptr_model = new Model("../obj/african_head.obj");
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cerr << "Invalid input." << std::endl;
+        std::cerr << "Usage: ./renderer <obj_path>" << std::endl;
+        std::cerr << "Example: ./renderer ../obj/cat.obj" << std::endl;
+        return 1;
+    }
+	Model* ptr_model = new Model(argv[1]);
     Model& model { *ptr_model };
 	render(model, WIDTH, HEIGHT, DEPTH);
     delete ptr_model;
