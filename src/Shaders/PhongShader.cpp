@@ -15,13 +15,13 @@ bool PhongShader::fragment(const Vec3f bar, TGAColor& color) {
     Vec3f reflected_light = normal * normal * m_light_dir * 2.f - m_light_dir; // light reflection formula
     float specular = pow(std::max(reflected_light.z / reflected_light.norm(), 0.0f), m_model.specular(uv));
     float diffuse = std::max(0.f, normal * m_light_dir);
-    float ambient = .1f;
+    float ambient = 5.0f;
 
     float coeff = normal * m_light_dir;
 
     TGAColor diff = m_model.diffuse(uv) * coeff;
     color = m_model.diffuse(uv);
     for (int i = 0; i < 3; i++) 
-        color[i] = std::min<float>(5 + diff[i] * (diffuse + specular), 255.f);
+        color[i] = std::min<float>(ambient + diff[i] * (diffuse + specular), 255.f);
     return false;
     }

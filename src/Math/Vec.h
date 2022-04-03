@@ -38,14 +38,14 @@ class Vec {
     }
 
     Vec<Dim, T>& operator += (Vec<Dim, T>& other) {
-        for (int i = 0; i < Dim; i++) {
+        for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] += other.m_data[i];
         }
         return *this;
     }
 
     Vec<Dim, T>& operator -= (Vec<Dim, T>& other) {
-        for (int i = 0; i < Dim; i++) {
+        for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] -= other.m_data[i];
         }
         return *this;
@@ -59,7 +59,7 @@ class Vec {
     }
 
     Vec<Dim, T>& operator /= (T value) {
-        for (int i = 0; i < Dim; i++) {
+        for (std::size_t i = 0; i < Dim; i++) {
             m_data[i] /= value;
         }
         return *this;
@@ -202,7 +202,7 @@ template <size_t Dim, typename T> std::ostream& operator << (std::ostream& out, 
 template<std::size_t Len, std::size_t Dim, typename T>
 Vec<Len, T> embed(const Vec<Dim, T> &v, T fill = 1) {
     Vec<Len, T> result;
-    for (int i = 0; i < Len; i++) {
+    for (std::size_t i = 0; i < Len; i++) {
         result[i] = i < Dim ? v[i] : fill;
     }
     return result;
@@ -211,7 +211,7 @@ Vec<Len, T> embed(const Vec<Dim, T> &v, T fill = 1) {
 template<std::size_t Len, std::size_t Dim, typename T>
 Vec<Len, T> proj(const Vec<Dim, T> &v) {
     Vec<Len, T> result;
-    for (int i = 0; i < Len; i++) {
+    for (std::size_t i = 0; i < Len; i++) {
         result[i] = v[i];
     }
     return result;

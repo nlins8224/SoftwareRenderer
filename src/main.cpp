@@ -28,7 +28,7 @@ void render_shadow(Model& model, int width, int height, int depth) {
     viewport(width / 8, height / 8, width * 3/4, height * 3/4, depth);
     projection(0);
     
-    DepthShader depth_shader{model, depth};
+    DepthShader depth_shader{model, static_cast<float>(depth)};
     Vec4f screen_coords[3];
     for (int i = 0; i < model.nfaces(); i++) {
         for (int j = 0; j < 3; j++) {
