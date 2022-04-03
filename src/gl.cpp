@@ -25,7 +25,6 @@ void projection(float coeff) {
 }
 
 void lookat(Vec3f eye, Vec3f center, Vec3f up) {
-	/* could be bugged here normalized -> normalize */
 	Vec3f z = (eye - center).normalized();
 	Vec3f x = cross_prod(up, z).normalized();
 	Vec3f y = cross_prod(z, x).normalized();
@@ -79,11 +78,15 @@ Vec3f barycentric(Vec2f A, Vec2f B, Vec2f C, Vec2f P) {
 }
 
 /* Pixel is inside triangle if barycentric coordinates parameters 0 <= u, v, z <= 1 */
-bool inTriangle(Vec3f barycentric) {
+bool in_triangle(Vec3f barycentric) {
 	return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.z >= 0;
 }
 
-int calculateFragDepth(Vec4f *pts, Vec3f barycentric) {
+bool is_visible(int depth, int frag_depth) {
+	return depth < frag_depth;
+}
+
+int calculate_frag_depth(Vec4f *pts, Vec3f barycentric) {
  	float z = pts[0][2] * barycentric.x + pts[1][2] * barycentric.y + pts[2][2] * barycentric.z;
  	float w = pts[0][3] * barycentric.x + pts[1][3] * barycentric.y + pts[2][3] * barycentric.z;
  	return std::max(0, std::min(255, int(z / w + .5)));
@@ -94,33 +97,33 @@ For each pixel in bounding box if pixel is inside triangle then color that pixel
 */
 //TODO: *pts -> ...args
 void triangle(Vec4f *pts, IShader &shader, TGAImage &image, TGAImage &zbuffer) {
- 	Vec2f boundingBoxMax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
- 	Vec2f boundingBoxMin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
+ 	Vec2f bounding_box_max(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+ 	Vec2f bounding_box_min(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
 
     /* set bounding box */
  	for (int i = 0; i < 3; i++) {
  		for (int j = 0; j < 2; j++) {
- 			boundingBoxMin[j] = std::min(boundingBoxMin[j], pts[i][j] / pts[i][3]);
-		    boundingBoxMax[j] = std::max(boundingBoxMax[j], pts[i][j] / pts[i][3]);
+ 			bounding_box_min[j] = std::min(bounding_box_min[j], pts[i][j] / pts[i][3]);
+		    bounding_box_max[j] = std::max(bounding_box_max[j], pts[i][j] / pts[i][3]);
  		}
  	}
  	Vec2i P;
     TGAColor color;
  	/* for each pixel in bounding box check if it is inside triangle and if should be rendered */
-	// TODO: could be for each?
- 	for (P.x = boundingBoxMin.x; P.x <= boundingBoxMax.x; P.x++) {
- 		for (P.y = boundingBoxMin.y; P.y <= boundingBoxMax.y; P.y++) {
+ 	for (P.x = bounding_box_min.x; P.x <= bounding_box_max.x; P.x++) {
+ 		for (P.y = bounding_box_min.y; P.y <= bounding_box_max.y; P.y++) {
  			Vec3f bar = barycentric(proj<2>(pts[0] / pts[0][3]), 
 			 						proj<2>(pts[1] / pts[1][3]), 
 									proj<2>(pts[2] / pts[2][3]), 
 									proj<2>(P));
 
- 			int fragDepth = calculateFragDepth(pts, bar);
- 			//TODO: Move this to separate function (isVisible)
- 			if (!inTriangle(bar) || zbuffer.get(P.x, P.y)[0] > fragDepth) continue;
+ 			int frag_depth = calculate_frag_depth(pts, bar);
+			int depth = zbuffer.get(P.x, P.y)[0];
+ 			//TODO: Move this to separate function (is_visible)
+ 			if (!in_triangle(bar) || !(is_visible(depth, frag_depth))) continue;
  			bool discard = shader.fragment(bar, color);
  			if (!discard) {
- 				zbuffer.set(P.x, P.y, TGAColor(fragDepth));
+ 				zbuffer.set(P.x, P.y, TGAColor(frag_depth));
  				image.set(P.x, P.y, color);
  			}
  		}
